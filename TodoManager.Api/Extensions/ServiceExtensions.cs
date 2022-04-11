@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TodoManager.Data;
 using TodoManager.Membership;
 using TodoManager.Membership.Entities;
 using TodoManager.Membership.Services;
@@ -24,6 +25,13 @@ public static class ServiceExtensions
     public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
     {
         services.AddDbContext<UserDbContext>(options =>
+            options.UseSqlServer(config.GetConnectionString("SqlConnection"), b =>
+            {
+                b.MigrationsAssembly(typeof(Program).Assembly.FullName);
+            })
+        );
+
+        services.AddDbContext<TodosDbContext>(options =>
             options.UseSqlServer(config.GetConnectionString("SqlConnection"), b =>
             {
                 b.MigrationsAssembly(typeof(Program).Assembly.FullName);
@@ -55,5 +63,6 @@ public static class ServiceExtensions
     public static void RegisterServices(this IServiceCollection services)
     {
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<TodosDbContext>();
     }
 }

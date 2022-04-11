@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.Membership", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoManager.Core", "Libraries\TodoManager.Core\TodoManager.Core.csproj", "{4AB3DDE2-C5F6-4D35-ABDE-C227D2E6074D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoManager.Data", "Libraries\TodoManager.Data\TodoManager.Data.csproj", "{1DB745D8-C556-4C26-8FD1-9203278078A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{4AB3DDE2-C5F6-4D35-ABDE-C227D2E6074D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AB3DDE2-C5F6-4D35-ABDE-C227D2E6074D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AB3DDE2-C5F6-4D35-ABDE-C227D2E6074D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DB745D8-C556-4C26-8FD1-9203278078A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DB745D8-C556-4C26-8FD1-9203278078A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DB745D8-C556-4C26-8FD1-9203278078A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DB745D8-C556-4C26-8FD1-9203278078A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +42,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{93D9A138-EA2D-4EF1-999A-4E98F01EA35C} = {09BA0654-B4C2-4C12-9757-C6B5455B3D12}
 		{4AB3DDE2-C5F6-4D35-ABDE-C227D2E6074D} = {09BA0654-B4C2-4C12-9757-C6B5455B3D12}
+		{1DB745D8-C556-4C26-8FD1-9203278078A0} = {09BA0654-B4C2-4C12-9757-C6B5455B3D12}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C8D8D1C-DE78-432D-BEFC-1D094FE36422}

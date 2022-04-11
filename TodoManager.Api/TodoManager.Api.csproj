@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\TodoManager.Data\TodoManager.Data.csproj" />
     <ProjectReference Include="..\Libraries\TodoManager.Membership\TodoManager.Membership.csproj" />
   </ItemGroup>
 
