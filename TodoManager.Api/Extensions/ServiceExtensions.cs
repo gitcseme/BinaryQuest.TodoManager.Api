@@ -65,4 +65,9 @@ public static class ServiceExtensions
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<TodosDbContext>();
     }
+
+    public static void RegisterRepositoryManagers(this IServiceCollection services)
+    {
+        services.AddScoped<ITodoRepositoryManager, TodoRepositoryManager>();
+    }
 }

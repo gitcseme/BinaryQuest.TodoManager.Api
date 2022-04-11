@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureCors();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureIdentity();
+builder.Services.RegisterRepositoryManagers();
 builder.Services.RegisterServices();
 
 

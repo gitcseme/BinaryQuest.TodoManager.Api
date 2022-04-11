@@ -5,7 +5,7 @@ namespace TodoManager.Data.Repositories;
 
 public class TodoRepository : RepositoryBase<TodosDbContext, Todo>, ITodoRepository
 {
-    protected TodoRepository(TodosDbContext context) : base(context)
+    public TodoRepository(TodosDbContext context) : base(context)
     {
     }
 }
