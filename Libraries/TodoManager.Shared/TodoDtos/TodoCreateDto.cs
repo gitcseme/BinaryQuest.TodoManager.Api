@@ -1,3 +1,6 @@
 namespace TodoManager.Shared.TodoDtos;
 
-public record TodoCreateDto(string Description);
+public class TodoCreateDto
+{
+    public string Description { get; set; }
+}

@@ -40,17 +40,12 @@ public class TodoService : ITodoService
 
     public async Task<IEnumerable<TodoResponseDto>> GetAllAsync()
     {
-        IEnumerable<TodoResponseDto> todos = await _repository.Todos.FindAll(trackChanges: false)
+        IEnumerable<TodoResponseDto> todos = await _repository.Todos
+            .FindAll(trackChanges: false)
             .Select(t => new TodoResponseDto(t.Id, t.Description, t.CreatedOn, t.UpdatedOn, t.IsDone))
             .ToListAsync();
 
         return todos;
-    }
-
-    private async Task<ApplicationUser> GetLoggedInUserAsync()
-    {
-        var loggedInUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-        return loggedInUser;
     }
 
     public async Task UpdateTodo(long id, TodoUpdateDto updateDto)
@@ -69,5 +64,14 @@ public class TodoService : ITodoService
     public async Task<Todo> GetTodo(long id)
     {
         return await _repository.Todos.GetAsync(id);
+    }
+
+    
+    /* Utility Functions */
+
+    private async Task<ApplicationUser> GetLoggedInUserAsync()
+    {
+        var loggedInUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+        return loggedInUser;
     }
 }

@@ -61,6 +61,15 @@ public static class ServiceExtensions
         });
     }
 
+    public static void ConfigureCookies(this IServiceCollection services)
+    {
+        services.ConfigureApplicationCookie(config =>
+        {
+            config.Cookie.Name = "_asp_net_token";
+            config.LoginPath = "/api/v1/account/signin";
+        });
+    }
+
     public static void RegisterServices(this IServiceCollection services)
     {
         services.AddScoped<IAccountService, AccountService>();
