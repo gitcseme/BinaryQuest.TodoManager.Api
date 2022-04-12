@@ -2,6 +2,7 @@
 
 namespace TodoManager.Data;
 
+// It will work as Unit Of Work for the repositories
 public class TodoRepositoryManager : ITodoRepositoryManager
 {
     private readonly TodosDbContext _todoContext;

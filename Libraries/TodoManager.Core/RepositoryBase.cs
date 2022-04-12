@@ -3,15 +3,17 @@ using System.Linq.Expressions;
 
 namespace TodoManager.Core;
 
-public class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntity> 
+public class RepositoryBase<TContext, TEntity, TKey> : IRepositoryBase<TEntity, TKey> 
 	where TEntity : class
 	where TContext : DbContext
 {
 	private readonly DbSet<TEntity> _dbSet;
+	private readonly DbContext _dbContext;
 
 	protected RepositoryBase(TContext context)
 	{
-		_dbSet = context.Set<TEntity>();
+		_dbContext = context;
+		_dbSet = _dbContext.Set<TEntity>();
 	}
 
 	public IQueryable<TEntity> FindAll(bool trackChanges)
@@ -24,18 +26,33 @@ public class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntity>
 		return !trackChanges ? _dbSet.Where(expression).AsNoTracking() : _dbSet.Where(expression);
 	}
 
-	public void Create(TEntity entity)
+	public async Task Create(TEntity entity)
 	{
-		_dbSet.Add(entity);
+		await _dbSet.AddAsync(entity);
 	}
 
-	public void Update(TEntity entity)
+	public async Task Update(TEntity entity)
 	{
-		_dbSet.Update(entity);
+		await Task.Run(() =>
+		{
+			_dbSet.Attach(entity);
+			_dbContext.Entry(entity).State = EntityState.Modified;
+		});
 	}
 
-	public void Delete(TEntity entity)
+	public async Task Delete(TEntity entity)
 	{
-		_dbSet.Remove(entity);
+		await Task.Run(() =>
+		{
+			if (_dbContext.Entry(entity).State == EntityState.Detached)
+				_dbSet.Attach(entity);
+
+			_dbSet.Remove(entity);
+		});
 	}
+
+    public async Task<TEntity> GetAsync(TKey id)
+    {
+		return await _dbSet.FindAsync(id);
+    }
 }

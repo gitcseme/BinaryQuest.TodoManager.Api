@@ -3,7 +3,6 @@ using TodoManager.Data.Entities;
 
 namespace TodoManager.Data.Repositories;
 
-public interface ITodoRepository : IRepositoryBase<Todo>
+public interface ITodoRepository : IRepositoryBase<Todo, long>
 {
-
 }

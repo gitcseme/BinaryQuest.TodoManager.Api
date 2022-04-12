@@ -1,0 +1,67 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using TodoManager.Data.Entities;
+using TodoManager.Membership.Entities;
+using TodoManager.Shared.TodoDtos;
+
+namespace TodoManager.Data.Services;
+
+public class TodoService : ITodoService
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly UserManager<ApplicationUser> _userManager;
+    public readonly ITodoRepositoryManager _repository;
+
+    public TodoService(ITodoRepositoryManager repository)
+    {
+        _repository = repository;
+    }
+
+    public async Task CreateTodo(TodoCreateDto createDto)
+    {
+        var todo = new Todo()
+        {
+            Description = createDto.Description,
+            IsDone = false,
+            CreatedBy = (await GetLoggedInUserAsync()).Id,
+            CreatedOn = DateTime.Now,
+            UpdatedOn = DateTime.Now
+        };
+
+        await _repository.Todos.Create(todo);
+    }
+
+    public async Task<IEnumerable<TodoResponseDto>> GetAllAsync()
+    {
+        IEnumerable<TodoResponseDto> todos = await _repository.Todos.FindAll(trackChanges: false)
+            .Select(t => new TodoResponseDto(t.Id, t.Description, t.CreatedOn, t.UpdatedOn, t.IsDone))
+            .ToListAsync();
+
+        return todos;
+    }
+
+    private async Task<ApplicationUser> GetLoggedInUserAsync()
+    {
+        var loggedInUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+        return loggedInUser;
+    }
+
+    public async Task UpdateTodo(long id, TodoUpdateDto updateDto)
+    {
+        var todo = await _repository.Todos.GetAsync(id);
+        if (todo is null)
+            throw new Exception("Todo doesn't exist");
+
+        todo.Description = updateDto.Description;
+        todo.UpdatedOn = DateTime.Now;
+
+        await _repository.Todos.Update(todo);
+        await _repository.SaveChanges();
+    }
+
+    public async Task<Todo> GetTodo(long id)
+    {
+        return await _repository.Todos.GetAsync(id);
+    }
+}

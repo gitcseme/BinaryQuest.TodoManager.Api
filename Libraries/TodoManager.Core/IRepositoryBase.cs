@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace TodoManager.Core;
 
-public interface IRepositoryBase<T>
+public interface IRepositoryBase<TEntity, TKey>
 {
-    IQueryable<T> FindAll(bool trackChanges);
-	IQueryable<T> Find(Expression<Func<T, bool>> expression, bool trackChanges);
-	void Create(T entity);
-	void Update(T entity);
-	void Delete(T entity);
+    IQueryable<TEntity> FindAll(bool trackChanges);
+	IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> expression, bool trackChanges);
+	Task Create(TEntity entity);
+	Task Update(TEntity entity);
+	Task Delete(TEntity entity);
+	Task<TEntity> GetAsync(TKey id);
 }

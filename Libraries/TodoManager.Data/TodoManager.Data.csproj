@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TodoManager.Core\TodoManager.Core.csproj" />
     <ProjectReference Include="..\TodoManager.Membership\TodoManager.Membership.csproj" />
+    <ProjectReference Include="..\TodoManager.Shared\TodoManager.Shared.csproj" />
   </ItemGroup>
 
 </Project>
