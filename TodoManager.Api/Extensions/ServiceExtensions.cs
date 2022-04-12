@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using LoggerService;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TodoManager.Data;
 using TodoManager.Data.Services;
 using TodoManager.Membership;
 using TodoManager.Membership.Entities;
 using TodoManager.Membership.Services;
+using LogLevel = NLog.LogLevel;
 
 namespace TodoManager.Api.Extensions;
 
@@ -68,6 +70,21 @@ public static class ServiceExtensions
             config.Cookie.Name = "_asp_net_token";
             config.LoginPath = "/api/v1/account/signin";
         });
+    }
+
+    public static void ConfigureLogger(this IServiceCollection services)
+    {
+        var config = new NLog.Config.LoggingConfiguration();
+        var targetFile = new NLog.Targets.FileTarget("logfile") { FileName = "logfile.txt" };
+
+        // minimum loglevel is Info & max is Fatal
+        config.AddRule(LogLevel.Info, LogLevel.Fatal, targetFile);
+
+        // Apply config
+        NLog.LogManager.Configuration = config; 
+        
+        // Add Logger in DI as singleton
+        services.AddSingleton<ILoggerManager, LoggerManager>();
     }
 
     public static void RegisterServices(this IServiceCollection services)
