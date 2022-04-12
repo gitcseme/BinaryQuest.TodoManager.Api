@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TodoManager.Data;
+using TodoManager.Data.Services;
 using TodoManager.Membership;
 using TodoManager.Membership.Entities;
 using TodoManager.Membership.Services;
@@ -69,5 +70,6 @@ public static class ServiceExtensions
     public static void RegisterRepositoryManagers(this IServiceCollection services)
     {
         services.AddScoped<ITodoRepositoryManager, TodoRepositoryManager>();
+        services.AddScoped<ITodoService, TodoService>();
     }
 }

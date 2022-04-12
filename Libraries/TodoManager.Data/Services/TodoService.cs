@@ -13,9 +13,14 @@ public class TodoService : ITodoService
     private readonly UserManager<ApplicationUser> _userManager;
     public readonly ITodoRepositoryManager _repository;
 
-    public TodoService(ITodoRepositoryManager repository)
+    public TodoService(
+        ITodoRepositoryManager repository, 
+        IHttpContextAccessor httpContextAccessor, 
+        UserManager<ApplicationUser> userManager)
     {
         _repository = repository;
+        _httpContextAccessor = httpContextAccessor;
+        _userManager = userManager;
     }
 
     public async Task CreateTodo(TodoCreateDto createDto)
@@ -30,6 +35,7 @@ public class TodoService : ITodoService
         };
 
         await _repository.Todos.Create(todo);
+        await _repository.SaveChanges();
     }
 
     public async Task<IEnumerable<TodoResponseDto>> GetAllAsync()

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace TodoManager.Core;
 
-public class RepositoryBase<TContext, TEntity, TKey> : IRepositoryBase<TEntity, TKey> 
+public abstract class RepositoryBase<TContext, TEntity, TKey> : IRepositoryBase<TEntity, TKey> 
 	where TEntity : class
 	where TContext : DbContext
 {
