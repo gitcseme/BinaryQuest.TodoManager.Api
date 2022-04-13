@@ -45,5 +45,19 @@ namespace TodoManager.Api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPut("{id:long}")]
+        public async Task<IActionResult> Update(long id, TodoUpdateDto updateDto)
+        {
+            try
+            {
+                await _todoService.UpdateTodo(id, updateDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

@@ -42,7 +42,14 @@ public class TodoService : ITodoService
     {
         IEnumerable<TodoResponseDto> todos = await _repository.Todos
             .FindAll(trackChanges: false)
-            .Select(t => new TodoResponseDto(t.Id, t.Description, t.CreatedOn, t.UpdatedOn, t.IsDone))
+            .Select(t => new TodoResponseDto 
+            { 
+                Id = t.Id,
+                Description = t.Description,
+                CreatedOn = t.CreatedOn.ToShortDateString() + " " + t.CreatedOn.ToShortTimeString(),
+                UpdatedOn = t.UpdatedOn.ToShortDateString() + " " + t.UpdatedOn.ToShortTimeString(),
+                IsDone = t.IsDone
+            })
             .ToListAsync();
 
         return todos;
@@ -55,6 +62,7 @@ public class TodoService : ITodoService
             throw new Exception("Todo doesn't exist");
 
         todo.Description = updateDto.Description;
+        todo.IsDone = updateDto.IsDone;
         todo.UpdatedOn = DateTime.Now;
 
         await _repository.Todos.Update(todo);

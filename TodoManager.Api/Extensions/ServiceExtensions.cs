@@ -16,11 +16,13 @@ public static class ServiceExtensions
     {
         services.AddCors(options =>
         {
-            options.AddPolicy("CorsPolicy", builder =>
+            options.AddPolicy(name: "CorsPolicy", builder =>
             {
-                builder.AllowAnyOrigin()
+                builder
+                    .WithOrigins("http://localhost:8080") // let the client access
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             });
         });
     }
@@ -67,8 +69,8 @@ public static class ServiceExtensions
     {
         services.ConfigureApplicationCookie(config =>
         {
-            config.Cookie.Name = "_asp_net_token";
-            config.LoginPath = "/api/v1/account/signin";
+            config.LoginPath = "/signin";
+            config.Cookie.SameSite = SameSiteMode.None; // allow cross-site cookie setup
         });
     }
 
