@@ -6,5 +6,6 @@ public class TodoResponseDto
     public string Description { get; set; }
     public string CreatedOn { get; set; }
     public string UpdatedOn { get; set; }
+    public string? Deadline { get; set; }
     public bool IsDone { get; set; }
 }

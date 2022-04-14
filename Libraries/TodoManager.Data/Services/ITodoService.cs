@@ -9,4 +9,5 @@ public interface ITodoService
     Task<IEnumerable<TodoResponseDto>> GetAllAsync();
     Task UpdateTodo(long id, TodoUpdateDto updateDto);
     Task<TodoResponseDto> GetTodo(long id);
+    Task Delete(long id);
 }

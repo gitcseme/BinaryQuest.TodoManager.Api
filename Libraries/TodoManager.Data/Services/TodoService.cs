@@ -29,7 +29,7 @@ public class TodoService : ITodoService
         {
             Description = createDto.Description,
             IsDone = false,
-            CreatedBy = (await GetLoggedInUserAsync()).Id,
+            CreatorId = (await GetLoggedInUserAsync()).Id,
             CreatedOn = DateTime.Now,
             UpdatedOn = DateTime.Now
         };
@@ -42,8 +42,13 @@ public class TodoService : ITodoService
 
     public async Task<IEnumerable<TodoResponseDto>> GetAllAsync()
     {
+        var user = await GetLoggedInUserAsync();
+        if (user is null)
+            throw new Exception("User not found");
+
         IEnumerable<TodoResponseDto> todos = await _repository.Todos
-            .FindAll(trackChanges: false)
+            .Find(todo => todo.CreatorId.Equals(user.Id), trackChanges: false)
+            .OrderByDescending(todo => todo.CreatedOn)
             .Select(t => PrepareTodoResponse(t))
             .ToListAsync();
 
@@ -52,13 +57,22 @@ public class TodoService : ITodoService
 
     public async Task UpdateTodo(long id, TodoUpdateDto updateDto)
     {
-        var todoEntity = await _repository.Todos.GetAsync(id);
+        var user = await GetLoggedInUserAsync();
+        if (user is null)
+            throw new Exception("User not found");
+
+        var todoEntity = await _repository.Todos
+            .Find(todo => todo.CreatorId.Equals(user.Id) && todo.Id.Equals(id), trackChanges: false)
+            .FirstOrDefaultAsync();
+
         if (todoEntity is null)
             throw new Exception("Todo doesn't exists");
 
+        // Populate the update data
         todoEntity.Description = updateDto.Description;
         todoEntity.IsDone = updateDto.IsDone;
         todoEntity.UpdatedOn = DateTime.Now;
+        todoEntity.Deadline = ConvertToDateTime(updateDto.Deadline);
 
         await _repository.Todos.Update(todoEntity);
         await _repository.SaveChanges();
@@ -66,14 +80,37 @@ public class TodoService : ITodoService
 
     public async Task<TodoResponseDto> GetTodo(long id)
     {
-        var todoEntity = await _repository.Todos.GetAsync(id);
+        var user = await GetLoggedInUserAsync();
+        if (user is null)
+            throw new Exception("User not found");
+
+        var todoEntity = await _repository.Todos
+            .Find(todo => todo.CreatorId.Equals(user.Id) && todo.Id.Equals(id), trackChanges: false)
+            .FirstOrDefaultAsync();
+
         if (todoEntity is null)
             throw new Exception("Todo doesn't exists");
 
         return PrepareTodoResponse(todoEntity);
     }
 
-    
+    public async Task Delete(long id)
+    {
+        var user = await GetLoggedInUserAsync();
+        if (user is null)
+            throw new Exception("User not found");
+
+        var todoEntity = await _repository.Todos
+            .Find(todo => todo.CreatorId.Equals(user.Id) && todo.Id.Equals(id), trackChanges: false)
+            .FirstOrDefaultAsync();
+
+        if (todoEntity is null)
+            throw new Exception("Todo doesn't exists");
+
+        await _repository.Todos.Delete(todoEntity);
+        await _repository.SaveChanges();
+    }
+
     /* Utility Functions */
 
     private async Task<ApplicationUser> GetLoggedInUserAsync()
@@ -89,9 +126,20 @@ public class TodoService : ITodoService
         {
             Id = todo.Id,
             Description = todo.Description,
-            IsDone = false,
+            IsDone = todo.IsDone,
             CreatedOn = todo.CreatedOn.ToShortDateString() + " " + todo.CreatedOn.ToShortTimeString(),
             UpdatedOn = todo.UpdatedOn.ToShortDateString() + " " + todo.UpdatedOn.ToShortTimeString(),
+            Deadline = todo.Deadline?.ToShortDateString()
         };
+    }
+
+    private static DateTime? ConvertToDateTime(long? deadline)
+    {
+        if (deadline is null)
+            return null;
+
+        var date = new DateTime(1970, 1, 1, 0, 0, 0, 0); // epoch start
+        date = date.AddMilliseconds((double)deadline);
+        return date;
     }
 }

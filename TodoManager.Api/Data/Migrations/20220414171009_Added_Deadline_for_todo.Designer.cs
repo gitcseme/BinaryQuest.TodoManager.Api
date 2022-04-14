@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoManager.Data;
 
@@ -11,9 +12,10 @@ using TodoManager.Data;
 namespace TodoManager.Api.Data.Migrations
 {
     [DbContext(typeof(TodosDbContext))]
-    partial class TodosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220414171009_Added_Deadline_for_todo")]
+    partial class Added_Deadline_for_todo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

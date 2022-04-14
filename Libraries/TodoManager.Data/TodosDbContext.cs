@@ -15,7 +15,7 @@ public class TodosDbContext : DbContext
             .HasKey(t => t.Id);
 
         modelBuilder.Entity<Todo>()
-            .Property(t => t.CreatedBy)
+            .Property(t => t.CreatorId)
             .IsRequired();
 
         base.OnModelCreating(modelBuilder);

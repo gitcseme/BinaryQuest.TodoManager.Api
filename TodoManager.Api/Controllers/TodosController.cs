@@ -22,7 +22,7 @@ namespace TodoManager.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(TodoCreateDto createDto)
+        public async Task<IActionResult> Create([FromBody] TodoCreateDto createDto)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace TodoManager.Api.Controllers
         }
 
         [HttpPut("{id:long}")]
-        public async Task<IActionResult> Update(long id, TodoUpdateDto updateDto)
+        public async Task<IActionResult> Update(long id, [FromBody] TodoUpdateDto updateDto)
         {
             try
             {
@@ -79,6 +79,21 @@ namespace TodoManager.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Getting todo by id");
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("{id:long}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            try
+            {
+                await _todoService.Delete(id);
+                return NoContent(); // 204
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting todo");
                 return StatusCode(500, ex.Message);
             }
         }
