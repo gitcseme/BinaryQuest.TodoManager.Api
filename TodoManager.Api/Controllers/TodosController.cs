@@ -97,5 +97,20 @@ namespace TodoManager.Api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string searchText)
+        {
+            try
+            {
+                var todosResponse = await _todoService.Search(searchText);
+                return Ok(todosResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error searching todos");
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

@@ -10,4 +10,5 @@ public interface ITodoService
     Task UpdateTodo(long id, TodoUpdateDto updateDto);
     Task<TodoResponseDto> GetTodo(long id);
     Task Delete(long id);
+    Task<IEnumerable<TodoResponseDto>> Search(string searchText);
 }
