@@ -83,7 +83,7 @@ public class TodoService : ITodoService
     }
 
     // todo: replace with automapper
-    private TodoResponseDto PrepareTodoResponse(Todo todo)
+    private static TodoResponseDto PrepareTodoResponse(Todo todo)
     {
         return new TodoResponseDto
         {
