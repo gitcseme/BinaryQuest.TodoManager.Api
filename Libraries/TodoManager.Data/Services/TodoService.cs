@@ -23,7 +23,7 @@ public class TodoService : ITodoService
         _userManager = userManager;
     }
 
-    public async Task CreateTodo(TodoCreateDto createDto)
+    public async Task<TodoResponseDto> CreateTodo(TodoCreateDto createDto)
     {
         var todo = new Todo()
         {
@@ -36,20 +36,15 @@ public class TodoService : ITodoService
 
         await _repository.Todos.Create(todo);
         await _repository.SaveChanges();
+
+        return PrepareTodoResponse(todo);
     }
 
     public async Task<IEnumerable<TodoResponseDto>> GetAllAsync()
     {
         IEnumerable<TodoResponseDto> todos = await _repository.Todos
             .FindAll(trackChanges: false)
-            .Select(t => new TodoResponseDto 
-            { 
-                Id = t.Id,
-                Description = t.Description,
-                CreatedOn = t.CreatedOn.ToShortDateString() + " " + t.CreatedOn.ToShortTimeString(),
-                UpdatedOn = t.UpdatedOn.ToShortDateString() + " " + t.UpdatedOn.ToShortTimeString(),
-                IsDone = t.IsDone
-            })
+            .Select(t => PrepareTodoResponse(t))
             .ToListAsync();
 
         return todos;
@@ -57,21 +52,25 @@ public class TodoService : ITodoService
 
     public async Task UpdateTodo(long id, TodoUpdateDto updateDto)
     {
-        var todo = await _repository.Todos.GetAsync(id);
-        if (todo is null)
-            throw new Exception("Todo doesn't exist");
+        var todoEntity = await _repository.Todos.GetAsync(id);
+        if (todoEntity is null)
+            throw new Exception("Todo doesn't exists");
 
-        todo.Description = updateDto.Description;
-        todo.IsDone = updateDto.IsDone;
-        todo.UpdatedOn = DateTime.Now;
+        todoEntity.Description = updateDto.Description;
+        todoEntity.IsDone = updateDto.IsDone;
+        todoEntity.UpdatedOn = DateTime.Now;
 
-        await _repository.Todos.Update(todo);
+        await _repository.Todos.Update(todoEntity);
         await _repository.SaveChanges();
     }
 
-    public async Task<Todo> GetTodo(long id)
+    public async Task<TodoResponseDto> GetTodo(long id)
     {
-        return await _repository.Todos.GetAsync(id);
+        var todoEntity = await _repository.Todos.GetAsync(id);
+        if (todoEntity is null)
+            throw new Exception("Todo doesn't exists");
+
+        return PrepareTodoResponse(todoEntity);
     }
 
     
@@ -81,5 +80,18 @@ public class TodoService : ITodoService
     {
         var loggedInUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
         return loggedInUser;
+    }
+
+    // todo: replace with automapper
+    private TodoResponseDto PrepareTodoResponse(Todo todo)
+    {
+        return new TodoResponseDto
+        {
+            Id = todo.Id,
+            Description = todo.Description,
+            IsDone = false,
+            CreatedOn = todo.CreatedOn.ToShortDateString() + " " + todo.CreatedOn.ToShortTimeString(),
+            UpdatedOn = todo.UpdatedOn.ToShortDateString() + " " + todo.UpdatedOn.ToShortTimeString(),
+        };
     }
 }

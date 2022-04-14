@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LoggerService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TodoManager.Data.Services;
@@ -12,10 +13,12 @@ namespace TodoManager.Api.Controllers
     public class TodosController : ControllerBase
     {
         private readonly ITodoService _todoService;
+        private readonly ILoggerManager _logger;
 
-        public TodosController(ITodoService todoService)
+        public TodosController(ITodoService todoService, ILoggerManager logger)
         {
             _todoService = todoService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -23,11 +26,14 @@ namespace TodoManager.Api.Controllers
         {
             try
             {
-                await _todoService.CreateTodo(createDto);
-                return Ok();
+                var createdTodo = await _todoService.CreateTodo(createDto);
+                _logger.LogInfo($"Todo with id {createdTodo.Id} at {createdTodo.CreatedOn}");
+
+                return CreatedAtRoute("GetTodoById", new { id = createdTodo.Id }, createdTodo); //201
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "creating todo");
                 return StatusCode(500, ex.Message);
             }
         }
@@ -42,6 +48,7 @@ namespace TodoManager.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "get all todo");
                 return StatusCode(500, ex.Message);
             }
         }
@@ -52,10 +59,26 @@ namespace TodoManager.Api.Controllers
             try
             {
                 await _todoService.UpdateTodo(id, updateDto);
-                return Ok();
+                return NoContent(); // 204
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "updating todo");
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("{id:long}", Name = "GetTodoById")]
+        public async Task<IActionResult> GetTodo(long id)
+        {
+            try
+            {
+                var todoResponse = await _todoService.GetTodo(id);
+                return Ok(todoResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Getting todo by id");
                 return StatusCode(500, ex.Message);
             }
         }
