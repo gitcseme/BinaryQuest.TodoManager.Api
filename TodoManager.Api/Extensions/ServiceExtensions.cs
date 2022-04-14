@@ -7,6 +7,7 @@ using TodoManager.Data.Services;
 using TodoManager.Membership;
 using TodoManager.Membership.Entities;
 using TodoManager.Membership.Services;
+using TodoManager.Notification.Entities;
 using LogLevel = NLog.LogLevel;
 
 namespace TodoManager.Api.Extensions;
@@ -30,15 +31,24 @@ public static class ServiceExtensions
 
     public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
     {
+        const string connectionStringName = "SqlConnection";
+
         services.AddDbContext<UserDbContext>(options =>
-            options.UseSqlServer(config.GetConnectionString("SqlConnection"), b =>
+            options.UseSqlServer(config.GetConnectionString(connectionStringName), b =>
             {
                 b.MigrationsAssembly(typeof(Program).Assembly.FullName);
             })
         );
 
         services.AddDbContext<TodosDbContext>(options =>
-            options.UseSqlServer(config.GetConnectionString("SqlConnection"), b =>
+            options.UseSqlServer(config.GetConnectionString(connectionStringName), b =>
+            {
+                b.MigrationsAssembly(typeof(Program).Assembly.FullName);
+            })
+        );
+
+        services.AddDbContext<NotificationContext>(options =>
+            options.UseSqlServer(config.GetConnectionString(connectionStringName), b =>
             {
                 b.MigrationsAssembly(typeof(Program).Assembly.FullName);
             })
@@ -103,6 +113,7 @@ public static class ServiceExtensions
     {
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<TodosDbContext>();
+        services.AddScoped<NotificationContext>();
     }
 
     public static void RegisterRepositoryManagers(this IServiceCollection services)
