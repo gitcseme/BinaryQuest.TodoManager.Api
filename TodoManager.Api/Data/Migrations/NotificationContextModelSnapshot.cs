@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TodoManager.Notification.Entities;
+using TodoManager.NotificationChannel;
 
 #nullable disable
 
@@ -22,7 +22,7 @@ namespace TodoManager.Api.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("TodoManager.Notification.Entities.Notification", b =>
+            modelBuilder.Entity("TodoManager.NotificationChannel.Entities.Notification", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,8 +40,11 @@ namespace TodoManager.Api.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("TodoId")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

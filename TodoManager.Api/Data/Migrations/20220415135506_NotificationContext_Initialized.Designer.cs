@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TodoManager.Notification.Entities;
+using TodoManager.NotificationChannel;
 
 #nullable disable
 
 namespace TodoManager.Api.Data.Migrations
 {
     [DbContext(typeof(NotificationContext))]
-    [Migration("20220414224517_NotificationContext_Added")]
-    partial class NotificationContext_Added
+    [Migration("20220415135506_NotificationContext_Initialized")]
+    partial class NotificationContext_Initialized
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace TodoManager.Api.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("TodoManager.Notification.Entities.Notification", b =>
+            modelBuilder.Entity("TodoManager.NotificationChannel.Entities.Notification", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,8 +42,11 @@ namespace TodoManager.Api.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("TodoId")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
