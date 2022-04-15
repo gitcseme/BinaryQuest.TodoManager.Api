@@ -11,26 +11,26 @@ public class NotificationService : INotificationService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly INotificatoinRepositoryManager _repository;
+    private readonly INotificationRepositoryManager _repository;
 
     public NotificationService(
         IHttpContextAccessor httpContextAccessor, 
         UserManager<ApplicationUser> userManager, 
-        INotificatoinRepositoryManager repository)
+        INotificationRepositoryManager repository)
     {
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
         _repository = repository;
     }
 
-    public async Task<IEnumerable<NotificationResponseDto>> GetAllAsync()
+    public async Task<IEnumerable<NotificationResponseDto>> GetAllAsync(bool trackChanges)
     {
         var user = await GetLoggedInUserAsync();
         if (user is null)
             throw new Exception("User not found");
 
         IEnumerable<NotificationResponseDto> notifications = await _repository.Notifications
-            .Find(n => n.TodoCreatorId.Equals(user.Id), trackChanges: false)
+            .Find(n => n.TodoCreatorId.Equals(user.Id), trackChanges)
             .OrderByDescending(n => n.Date)
             .Select(n => PrepareNotificationResponse(n))
             .ToListAsync();
@@ -40,7 +40,14 @@ public class NotificationService : INotificationService
 
     private static NotificationResponseDto PrepareNotificationResponse(Notification n)
     {
-        throw new NotImplementedException();
+        return new NotificationResponseDto
+        {
+            TodoId = n.TodoId,
+            TodoCreatorId = n.TodoCreatorId,
+            Message = n.Message,
+            IsSeen = n.IsSeen,
+            Type = n.Type
+        };
     }
 
     public async Task MarkSeenAsync(long id)

@@ -2,7 +2,7 @@
 
 namespace TodoManager.NotificationChannel;
 
-public interface INotificatoinRepositoryManager
+public interface INotificationRepositoryManager
 {
     INotificationRepository Notifications { get; }
 

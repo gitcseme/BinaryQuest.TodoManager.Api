@@ -9,7 +9,7 @@ namespace TodoManager.Api.Controllers
 {
     [Route("api/v1/[controller]")]
     [Authorize]
-    //[ApiController]
+    [ApiController]
     public class TodosController : ControllerBase
     {
         private readonly ITodoService _todoService;

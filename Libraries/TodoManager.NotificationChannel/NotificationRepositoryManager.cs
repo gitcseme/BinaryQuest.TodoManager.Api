@@ -2,11 +2,11 @@
 
 namespace TodoManager.NotificationChannel;
 
-public class NotificatoinRepositoryManager : INotificatoinRepositoryManager
+public class NotificationRepositoryManager : INotificationRepositoryManager
 {
     private readonly NotificationContext _notificationContext;
 
-    public NotificatoinRepositoryManager(NotificationContext notificationContext)
+    public NotificationRepositoryManager(NotificationContext notificationContext)
     {
         _notificationContext = notificationContext;
         Notifications = new NotificationRepository(_notificationContext);
