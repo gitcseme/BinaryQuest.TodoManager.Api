@@ -21,7 +21,7 @@
     <ProjectReference Include="..\Libraries\LoggerService\LoggerService.csproj" />
     <ProjectReference Include="..\Libraries\TodoManager.Data\TodoManager.Data.csproj" />
     <ProjectReference Include="..\Libraries\TodoManager.Membership\TodoManager.Membership.csproj" />
-    <ProjectReference Include="..\Libraries\TodoManager.Notification\TodoManager.Notification.csproj" />
+    <ProjectReference Include="..\Libraries\TodoManager.NotificationChannel\TodoManager.NotificationChannel.csproj" />
   </ItemGroup>
 
 </Project>

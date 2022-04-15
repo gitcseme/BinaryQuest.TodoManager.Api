@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TodoManager.NotificationChannel.Entities;
 
-namespace TodoManager.Notification.Entities;
+namespace TodoManager.NotificationChannel;
 
 public class NotificationContext : DbContext
 {
