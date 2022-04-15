@@ -7,7 +7,7 @@ using TodoManager.Data.Services;
 using TodoManager.Membership;
 using TodoManager.Membership.Entities;
 using TodoManager.Membership.Services;
-using TodoManager.Notification.Entities;
+using TodoManager.NotificationChannel;
 using LogLevel = NLog.LogLevel;
 
 namespace TodoManager.Api.Extensions;

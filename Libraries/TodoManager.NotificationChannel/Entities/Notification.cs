@@ -1,6 +1,6 @@
 ﻿using TodoManager.Core;
 
-namespace TodoManager.Notification.Entities;
+namespace TodoManager.NotificationChannel.Entities;
 
 public class Notification : EntityBase<long>
 {
