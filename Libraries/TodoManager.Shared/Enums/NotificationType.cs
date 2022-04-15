@@ -1,4 +1,4 @@
-﻿namespace TodoManager.NotificationChannel.Enums;
+﻿namespace TodoManager.Shared.Enums;
 
 public enum NotificationType
 {

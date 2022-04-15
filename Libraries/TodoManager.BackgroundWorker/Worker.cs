@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using TodoManager.Data;
 using TodoManager.NotificationChannel;
 using TodoManager.NotificationChannel.Entities;
-using System.Linq;
 using TodoManager.Data.Entities;
+using TodoManager.Shared.Enums;
 
 namespace TodoManager.BackgroundWorker
 {
@@ -13,8 +13,6 @@ namespace TodoManager.BackgroundWorker
         private DbContextOptions<NotificationContext> notificationDbContextOptions;
         private DbContextOptions<TodosDbContext> todoDbContextOptions;
         private IConfiguration configuration;
-        //private NotificationContext notificationContext;
-        //private TodosDbContext todosDbContext;
         private string connectionString;
 
         public Worker(ILogger<Worker> logger, IConfiguration configuration)
@@ -54,7 +52,6 @@ namespace TodoManager.BackgroundWorker
         private async Task CheckTodosToNotifyAsync()
         {
             var todos = new List<Todo>();
-            var notifications = new List<Notification>();
 
             using (var todoContext = new TodosDbContext(todoDbContextOptions))
             {
@@ -63,7 +60,7 @@ namespace TodoManager.BackgroundWorker
 
             using (var notificationContext = new NotificationContext(notificationDbContextOptions))
             {
-                notifications = await notificationContext.Notifications.ToListAsync();
+                var notifications = await notificationContext.Notifications.ToListAsync();
 
                 // Filter todos that are not notified already
                 var todoList = (from todo in todos
@@ -80,10 +77,11 @@ namespace TodoManager.BackgroundWorker
                     .Select(todo => new Notification()
                     {
                         TodoId = todo.Id,
+                        TodoCreatorId = todo.CreatorId,
                         Message = "Deadline is over for this todo",
                         IsSeen = false,
                         Date = DateTime.Now,
-                        Type = NotificationChannel.Enums.NotificationType.DeadlineCrossed
+                        Type = NotificationType.DeadlineCrossed
                     })
                     .ToList();
 
