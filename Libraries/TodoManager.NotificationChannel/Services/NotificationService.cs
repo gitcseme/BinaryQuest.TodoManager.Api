@@ -42,11 +42,12 @@ public class NotificationService : INotificationService
     {
         return new NotificationResponseDto
         {
+            id = n.Id,
             TodoId = n.TodoId,
             TodoCreatorId = n.TodoCreatorId,
             Message = n.Message,
             IsSeen = n.IsSeen,
-            Type = n.Type
+            Type = n.Type.ToString()
         };
     }
 

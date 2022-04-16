@@ -12,7 +12,6 @@ namespace TodoManager.BackgroundWorker
         private readonly ILogger<Worker> _logger;
         private DbContextOptions<NotificationContext> notificationDbContextOptions;
         private DbContextOptions<TodosDbContext> todoDbContextOptions;
-        private IConfiguration configuration;
         private string connectionString;
 
         public Worker(ILogger<Worker> logger, IConfiguration configuration)
@@ -78,7 +77,7 @@ namespace TodoManager.BackgroundWorker
                     {
                         TodoId = todo.Id,
                         TodoCreatorId = todo.CreatorId,
-                        Message = "Deadline is over for this todo",
+                        Message = "Deadline over",
                         IsSeen = false,
                         Date = DateTime.Now,
                         Type = NotificationType.DeadlineCrossed

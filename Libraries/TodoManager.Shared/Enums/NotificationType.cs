@@ -2,7 +2,7 @@
 
 public enum NotificationType
 {
-    CloseToDeadline,
-    DeadlineCrossed,
-    System
+    CloseToDeadline = 1,
+    DeadlineCrossed = 2,
+    System = 3
 }

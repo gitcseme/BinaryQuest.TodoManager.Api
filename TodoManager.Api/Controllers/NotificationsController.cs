@@ -35,7 +35,8 @@ namespace TodoManager.Api.Controllers
             }
         }
 
-        [HttpPut("{id:long}")]
+        [HttpPut]
+        [Route("{id:long}/read")]
         public async Task<IActionResult> MarkSeen(long id)
         {
             try
