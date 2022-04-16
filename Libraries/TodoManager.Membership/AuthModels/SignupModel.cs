@@ -9,5 +9,5 @@ public class SignupModel
 
     [Required, MinLength(4, ErrorMessage = "Length must be greater than 4 characters")]
     public string Password { get; set; }
-    public string UserName { get; set; }
+    //public string UserName { get; set; }
 }

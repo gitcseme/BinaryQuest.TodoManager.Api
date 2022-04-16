@@ -99,7 +99,7 @@ namespace TodoManager.Api.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> Search(string searchText)
+        public async Task<IActionResult> Search(string? searchText)
         {
             try
             {

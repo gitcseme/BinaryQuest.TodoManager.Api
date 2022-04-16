@@ -111,21 +111,29 @@ public class TodoService : ITodoService
         await _repository.SaveChanges();
     }
 
-    public async Task<IEnumerable<TodoResponseDto>> Search(string searchText)
+    public async Task<IEnumerable<TodoResponseDto>> Search(string? searchText)
     {
         var user = await GetLoggedInUserAsync();
         if (user is null)
             throw new Exception("User not found");
 
-        var todoResponses = await _repository.Todos
-            .Find(t =>
+        var todoResponses = _repository.Todos;
+
+        if (searchText == "" || searchText == null)
+        {
+            return await todoResponses.Find(t =>
+                t.CreatorId.Equals(user.Id), trackChanges: false)
+            .OrderByDescending(t => t.CreatedOn)
+            .Select(t => PrepareTodoResponse(t))
+            .ToListAsync();
+        }
+
+        return await todoResponses.Find(t =>
                 t.CreatorId.Equals(user.Id) &&
                 t.Description.ToLower().Contains(searchText.ToLower()), trackChanges: false)
             .OrderByDescending(t => t.CreatedOn)
             .Select(t => PrepareTodoResponse(t))
             .ToListAsync();
-
-        return todoResponses;
     }
 
     /* Utility Functions */

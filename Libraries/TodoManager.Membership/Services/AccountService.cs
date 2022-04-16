@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Text;
 using TodoManager.Membership.AuthModels;
 using TodoManager.Membership.Entities;
 
@@ -31,10 +32,15 @@ public class AccountService : IAccountService
             Email = model.Email,
             UserName = model.Email
         };
-
+        
         var result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)
             await _signInManager.SignInAsync(user, isPersistent: true);
+        else
+        {
+            var error = result.Errors.FirstOrDefault()?.Description;
+            throw new Exception(error);
+        }
         
         return user;
     }
