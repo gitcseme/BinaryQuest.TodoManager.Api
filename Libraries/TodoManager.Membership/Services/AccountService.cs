@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System.Text;
 using TodoManager.Membership.AuthModels;
 using TodoManager.Membership.Entities;
+using TodoManager.Shared.CustomExceptions;
 
 namespace TodoManager.Membership.Services;
 
@@ -22,7 +24,7 @@ public class AccountService : IAccountService
         if (result.Succeeded)
             return await _userManager.FindByEmailAsync(model.Email);
 
-        throw new Exception("Failed email or password is invalid");
+        throw new ApiException("Email or password is invalid", StatusCodes.Status400BadRequest);
     }
 
     public async Task<ApplicationUser> SignupAsync(SignupModel model)
@@ -35,13 +37,12 @@ public class AccountService : IAccountService
         
         var result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)
-            await _signInManager.SignInAsync(user, isPersistent: true);
-        else
         {
-            var error = result.Errors.FirstOrDefault()?.Description;
-            throw new Exception(error);
+            await _signInManager.SignInAsync(user, isPersistent: true);
+            return user;
         }
-        
-        return user;
+
+        var error = result.Errors.FirstOrDefault()?.Description;
+        throw new Exception(error);
     }
 }

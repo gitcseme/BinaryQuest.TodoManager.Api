@@ -34,66 +34,32 @@ namespace TodoManager.Api.Controllers
         [Route("signup")]
         public async Task<IActionResult> Signup(SignupModel model)
         {
-            try
-            {
-                var user = await _accountService.SignupAsync(model);
-                _logger.LogInfo($"Successfull signup by {user.Email}");
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception in signup: {ex.Message}");
-                return StatusCode(500, ex.Message);
-            }
+            var user = await _accountService.SignupAsync(model);
+            return Ok(user);
         }
 
         [HttpPost]
         [Route("signin")]
         public async Task<IActionResult> Signin(SigninModel model)
         {
-            try
-            {
-                var user = await _accountService.SigninAsync(model);
-                _logger.LogInfo($"Successfull login by {user.Email}");
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception in signin: {ex.Message}");
-                return StatusCode(500, ex.Message);
-            }
+            var user = await _accountService.SigninAsync(model);
+            return Ok(user);
         }
 
         [Authorize]
         [HttpGet("userinfo")]
         public async Task<IActionResult> GetUser()
         {
-            try
-            {
-                var user = await _userManager.GetUserAsync(HttpContext.User);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return StatusCode(500, ex.Message);
-            }
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            return Ok(user);
         }
 
         [Authorize]
         [HttpPost("signout")]
         public async Task<IActionResult> Signout()
         {
-            try
-            {
-                await _signInManager.SignOutAsync();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Signout exception");
-                return StatusCode(500, ex.Message);
-            }
+            await _signInManager.SignOutAsync();
+            return Ok();
         }
     }
 }

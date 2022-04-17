@@ -88,7 +88,7 @@ public static class ServiceExtensions
                 OnRedirectToLogin = context =>
                 {
                     // don't redirect to login but return 401 as unauthorize
-                    context.HttpContext.Response.StatusCode = 401;
+                    context.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     return Task.CompletedTask;
                 }
             };
