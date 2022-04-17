@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TodoManager.Membership.Entities;
 using TodoManager.NotificationChannel.Entities;
+using TodoManager.Shared.CustomExceptions;
 using TodoManager.Shared.NotificationDtos;
 
 namespace TodoManager.NotificationChannel.Services;
@@ -26,8 +27,6 @@ public class NotificationService : INotificationService
     public async Task<IEnumerable<NotificationResponseDto>> GetAllAsync(bool trackChanges)
     {
         var user = await GetLoggedInUserAsync();
-        if (user is null)
-            throw new Exception("User not found");
 
         IEnumerable<NotificationResponseDto> notifications = await _repository.Notifications
             .Find(n => n.TodoCreatorId.Equals(user.Id), trackChanges)
@@ -54,15 +53,13 @@ public class NotificationService : INotificationService
     public async Task MarkSeenAsync(long id)
     {
         var user = await GetLoggedInUserAsync();
-        if (user is null)
-            throw new Exception("User not found");
 
         var notificationEntity = await _repository.Notifications
             .Find(n => n.Id.Equals(id) && n.TodoCreatorId.Equals(user.Id), trackChanges: false)
             .FirstOrDefaultAsync();
 
         if (notificationEntity is null)
-            throw new Exception("Notification not found");
+            throw new ApiException("Notification not found", StatusCodes.Status404NotFound);
 
         // Mark seen
         notificationEntity.IsSeen = true;
@@ -76,6 +73,9 @@ public class NotificationService : INotificationService
     private async Task<ApplicationUser> GetLoggedInUserAsync()
     {
         var loggedInUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+        if (loggedInUser is null)
+            throw new ApiException("User doesn't exists or not logged in", StatusCodes.Status400BadRequest);
+
         return loggedInUser;
     }
 }

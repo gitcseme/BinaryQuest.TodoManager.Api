@@ -24,93 +24,45 @@ namespace TodoManager.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TodoCreateDto createDto)
         {
-            try
-            {
-                var createdTodo = await _todoService.CreateTodo(createDto);
-                _logger.LogInfo($"Todo with id {createdTodo.Id} at {createdTodo.CreatedOn}");
+            var createdTodo = await _todoService.CreateTodo(createDto);
+            _logger.LogInfo($"Todo with id {createdTodo.Id} at {createdTodo.CreatedOn}");
 
-                return CreatedAtRoute("GetTodoById", new { id = createdTodo.Id }, createdTodo); //201
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "creating todo");
-                return StatusCode(500, ex.Message);
-            }
+            return CreatedAtRoute("GetTodoById", new { id = createdTodo.Id }, createdTodo); //201
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                var todoResponses = await _todoService.GetAllAsync();
-                return Ok(todoResponses);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "get all todo");
-                return StatusCode(500, ex.Message);
-            }
+            var todoResponses = await _todoService.GetAllAsync();
+            return Ok(todoResponses);
         }
 
         [HttpPut("{id:long}")]
         public async Task<IActionResult> Update(long id, [FromBody] TodoUpdateDto updateDto)
         {
-            try
-            {
-                await _todoService.UpdateTodo(id, updateDto);
-                return NoContent(); // 204
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "updating todo");
-                return StatusCode(500, ex.Message);
-            }
+            await _todoService.UpdateTodo(id, updateDto);
+            return NoContent(); // 204 
         }
 
         [HttpGet("{id:long}", Name = "GetTodoById")]
         public async Task<IActionResult> GetTodo(long id)
         {
-            try
-            {
-                var todoResponse = await _todoService.GetTodo(id);
-                return Ok(todoResponse);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Getting todo by id");
-                return StatusCode(500, ex.Message);
-            }
+            var todoResponse = await _todoService.GetTodo(id);
+            return Ok(todoResponse);
         }
 
         [HttpDelete("{id:long}")]
         public async Task<IActionResult> Delete(long id)
         {
-            try
-            {
-                await _todoService.Delete(id);
-                return NoContent(); // 204
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error deleting todo");
-                return StatusCode(500, ex.Message);
-            }
+            await _todoService.Delete(id);
+            return NoContent(); // 204
         }
 
         [HttpGet("search")]
         public async Task<IActionResult> Search(string? searchText)
         {
-            try
-            {
-                var todosResponse = await _todoService.Search(searchText);
-                return Ok(todosResponse);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error searching todos");
-                return StatusCode(500, ex.Message);
-            }
+            var todosResponse = await _todoService.Search(searchText);
+            return Ok(todosResponse);
         }
     }
 }

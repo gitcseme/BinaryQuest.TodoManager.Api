@@ -23,32 +23,16 @@ namespace TodoManager.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                var notificationResponses = await _notificationService.GetAllAsync(trackChanges: false);
-                return Ok(notificationResponses);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "error getting all notification");
-                return StatusCode(500, ex.Message);
-            }
+            var notificationResponses = await _notificationService.GetAllAsync(trackChanges: false);
+            return Ok(notificationResponses);
         }
 
         [HttpPut]
         [Route("{id:long}/read")]
         public async Task<IActionResult> MarkSeen(long id)
         {
-            try
-            {
-                await _notificationService.MarkSeenAsync(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "error marking notification seen");
-                return StatusCode(500, ex.Message);
-            }
+            await _notificationService.MarkSeenAsync(id);
+            return NoContent();
         }
     }
 }

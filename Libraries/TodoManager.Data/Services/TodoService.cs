@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TodoManager.Data.Entities;
 using TodoManager.Membership.Entities;
+using TodoManager.Shared.CustomExceptions;
 using TodoManager.Shared.TodoDtos;
 
 namespace TodoManager.Data.Services;
@@ -43,8 +44,6 @@ public class TodoService : ITodoService
     public async Task<IEnumerable<TodoResponseDto>> GetAllAsync()
     {
         var user = await GetLoggedInUserAsync();
-        if (user is null)
-            throw new Exception("User not found");
 
         IEnumerable<TodoResponseDto> todos = await _repository.Todos
             .Find(todo => todo.CreatorId.Equals(user.Id), trackChanges: false)
@@ -58,15 +57,13 @@ public class TodoService : ITodoService
     public async Task UpdateTodo(long id, TodoUpdateDto updateDto)
     {
         var user = await GetLoggedInUserAsync();
-        if (user is null)
-            throw new Exception("User not found");
 
         var todoEntity = await _repository.Todos
             .Find(todo => todo.CreatorId.Equals(user.Id) && todo.Id.Equals(id), trackChanges: false)
             .FirstOrDefaultAsync();
 
         if (todoEntity is null)
-            throw new Exception("Todo doesn't exists");
+            throw new ApiException("Todo doesn't exists", StatusCodes.Status500InternalServerError);
 
         // Populate the update data
         todoEntity.Description = updateDto.Description;
@@ -81,8 +78,6 @@ public class TodoService : ITodoService
     public async Task<TodoResponseDto> GetTodo(long id)
     {
         var user = await GetLoggedInUserAsync();
-        if (user is null)
-            throw new Exception("User not found");
 
         var todoEntity = await _repository.Todos
             .Find(todo => todo.CreatorId.Equals(user.Id) && todo.Id.Equals(id), trackChanges: false)
@@ -97,8 +92,6 @@ public class TodoService : ITodoService
     public async Task Delete(long id)
     {
         var user = await GetLoggedInUserAsync();
-        if (user is null)
-            throw new Exception("User not found");
 
         var todoEntity = await _repository.Todos
             .Find(todo => todo.CreatorId.Equals(user.Id) && todo.Id.Equals(id), trackChanges: false)
@@ -114,8 +107,6 @@ public class TodoService : ITodoService
     public async Task<IEnumerable<TodoResponseDto>> Search(string? searchText)
     {
         var user = await GetLoggedInUserAsync();
-        if (user is null)
-            throw new Exception("User not found");
 
         var todoResponses = _repository.Todos;
 
@@ -141,6 +132,9 @@ public class TodoService : ITodoService
     private async Task<ApplicationUser> GetLoggedInUserAsync()
     {
         var loggedInUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+        if (loggedInUser is null)
+            throw new ApiException("User doesn't exists or not logged in", StatusCodes.Status400BadRequest);
+
         return loggedInUser;
     }
 
