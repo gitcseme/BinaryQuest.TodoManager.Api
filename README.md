@@ -20,11 +20,18 @@ Frontend:  Vue.js 2
 ## How to run 
 0. **Change connection string in both projects below**
 
-1. Open directory BinaryQuest.TodoManager.Api /TodoManager.Api in cmd and run (**api**)
+1. Apply migrations for database to create. Apply one by one
+```
+     Update-Database -Context UserDbContext
+     Update-Database -Context TodosDbContext
+     Update-Database -Context NotificationContext
+```
+
+2. Open directory BinaryQuest.TodoManager.Api /TodoManager.Api in cmd and run (**api**)
 ```
 dotnet run
 ```
-2. Open directory BinaryQuest.TodoManager.Api /TodoManager.BackgroundWorker in cmd and run (**background service**)
+3. Open directory BinaryQuest.TodoManager.Api /TodoManager.BackgroundWorker in cmd and run (**background service**)
 ```
 dotnet run
 ```
@@ -32,12 +39,12 @@ dotnet run
 After running these commands the backend should be up and running. Place the URL in browser https://localhost:7288/swagger/index.html
 You will see the api documentation with **swagger** ui
 
-3. To run the frontend app follow the repository readme.md file of the frontend app: https://github.com/gitcseme/todomanager.client
+4. To run the frontend app follow the repository readme.md file of the frontend app: https://github.com/gitcseme/todomanager.client
 
 ## API
 * The api is written with **.Net 6**
 * Followed generic **repository** & **unit of work** pattern
-* Applied exception handling
+* Write a **middleware** to handle exceptions globaly
 * Used **NLog** for logging
 * Api documentation with swagger
 
