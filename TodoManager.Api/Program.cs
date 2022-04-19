@@ -1,5 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
 using TodoManager.Api.Extensions;
+using TodoManager.Api.Filters;
 using TodoManager.Api.Middlewares;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +16,23 @@ builder.Services.ConfigureCookies();
 builder.Services.RegisterRepositoryManagers();
 builder.Services.RegisterServices();
 
+// Register fluent validators
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+})
+.AddFluentValidation();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
