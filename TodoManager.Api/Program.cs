@@ -4,6 +4,8 @@ using TodoManager.Api.Filters;
 using TodoManager.Api.Middlewares;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using TodoManager.Api.DtoValidators;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,14 +18,18 @@ builder.Services.ConfigureCookies();
 builder.Services.RegisterRepositoryManagers();
 builder.Services.RegisterServices();
 
-// Register fluent validators
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
 
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
 })
-.AddFluentValidation();
+.AddFluentValidation(fv =>
+{
+    fv.ImplicitlyValidateChildProperties = true;
+    fv.ImplicitlyValidateRootCollectionElements = true;
+    fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

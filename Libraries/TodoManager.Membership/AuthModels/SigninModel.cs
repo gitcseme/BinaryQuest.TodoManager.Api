@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace TodoManager.Membership.AuthModels;
+﻿namespace TodoManager.Membership.AuthModels;
 
 public class SigninModel
 {
