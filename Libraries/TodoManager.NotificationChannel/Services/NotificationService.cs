@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TodoManager.Membership.Entities;
+using TodoManager.Shared.Entities;
 using TodoManager.NotificationChannel.Entities;
 using TodoManager.Shared.CustomExceptions;
 using TodoManager.Shared.NotificationDtos;

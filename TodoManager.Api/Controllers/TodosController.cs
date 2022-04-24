@@ -24,7 +24,7 @@ namespace TodoManager.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TodoCreateDto createDto)
         {
-            var createdTodo = await _todoService.CreateTodo(createDto);
+            var createdTodo = await _todoService.CreateTodoAsync(createDto);
             _logger.LogInfo($"Todo with id {createdTodo.Id} at {createdTodo.CreatedOn}");
 
             return CreatedAtRoute("GetTodoById", new { id = createdTodo.Id }, createdTodo); //201
@@ -40,28 +40,28 @@ namespace TodoManager.Api.Controllers
         [HttpPut("{id:long}")]
         public async Task<IActionResult> Update(long id, [FromBody] TodoUpdateDto updateDto)
         {
-            await _todoService.UpdateTodo(id, updateDto);
+            await _todoService.UpdateTodoAsync(id, updateDto);
             return NoContent(); // 204 
         }
 
         [HttpGet("{id:long}", Name = "GetTodoById")]
         public async Task<IActionResult> GetTodo(long id)
         {
-            var todoResponse = await _todoService.GetTodo(id);
+            var todoResponse = await _todoService.GetByIdAsync(id);
             return Ok(todoResponse);
         }
 
         [HttpDelete("{id:long}")]
         public async Task<IActionResult> Delete(long id)
         {
-            await _todoService.Delete(id);
+            await _todoService.DeleteAsync(id);
             return NoContent(); // 204
         }
 
         [HttpGet("search")]
         public async Task<IActionResult> Search(string? searchText)
         {
-            var todosResponse = await _todoService.Search(searchText);
+            var todosResponse = await _todoService.SearchAsync(searchText);
             return Ok(todosResponse);
         }
     }

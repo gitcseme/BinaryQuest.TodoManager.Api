@@ -2,35 +2,34 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TodoManager.Data.Entities;
-using TodoManager.Membership.Entities;
+using TodoManager.Shared.Entities;
 using TodoManager.Shared.CustomExceptions;
 using TodoManager.Shared.TodoDtos;
+using TodoManager.Shared.Services;
 
 namespace TodoManager.Data.Services;
 
 public class TodoService : ITodoService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly UserManager<ApplicationUser> _userManager;
-    public readonly ITodoRepositoryManager _repository;
+    private readonly ITodoRepositoryManager _repository;
+    private IUtilityService _utilityService;
+
 
     public TodoService(
-        ITodoRepositoryManager repository, 
-        IHttpContextAccessor httpContextAccessor, 
-        UserManager<ApplicationUser> userManager)
+        ITodoRepositoryManager repository,
+        IUtilityService utilityService)
     {
         _repository = repository;
-        _httpContextAccessor = httpContextAccessor;
-        _userManager = userManager;
+        _utilityService = utilityService;
     }
 
-    public async Task<TodoResponseDto> CreateTodo(TodoCreateDto createDto)
+    public async Task<TodoResponseDto> CreateTodoAsync(TodoCreateDto createDto)
     {
         var todo = new Todo()
         {
             Description = createDto.Description,
             IsDone = false,
-            CreatorId = (await GetLoggedInUserAsync()).Id,
+            CreatorId = (await _utilityService.GetLoggedInUserAsync()).Id,
             CreatedOn = DateTime.Now,
             UpdatedOn = DateTime.Now
         };
@@ -43,7 +42,7 @@ public class TodoService : ITodoService
 
     public async Task<IEnumerable<TodoResponseDto>> GetAllAsync()
     {
-        var user = await GetLoggedInUserAsync();
+        var user = await _utilityService.GetLoggedInUserAsync();
 
         IEnumerable<TodoResponseDto> todos = await _repository.Todos
             .Find(todo => todo.CreatorId.Equals(user.Id), trackChanges: false)
@@ -54,9 +53,9 @@ public class TodoService : ITodoService
         return todos;
     }
 
-    public async Task UpdateTodo(long id, TodoUpdateDto updateDto)
+    public async Task UpdateTodoAsync(long id, TodoUpdateDto updateDto)
     {
-        var user = await GetLoggedInUserAsync();
+        var user = await _utilityService.GetLoggedInUserAsync();
 
         var todoEntity = await _repository.Todos
             .Find(todo => todo.CreatorId.Equals(user.Id) && todo.Id.Equals(id), trackChanges: false)
@@ -69,19 +68,17 @@ public class TodoService : ITodoService
         todoEntity.Description = updateDto.Description;
         todoEntity.IsDone = updateDto.IsDone;
         todoEntity.UpdatedOn = DateTime.Now;
-        todoEntity.Deadline = ConvertToDateTime(updateDto.Deadline);
+        todoEntity.Deadline = _utilityService.ConvertToDateTime(updateDto.Deadline);
 
         await _repository.Todos.Update(todoEntity);
         await _repository.SaveChanges();
     }
 
-    public async Task<TodoResponseDto> GetTodo(long id)
+    public async Task<TodoResponseDto> GetByIdAsync(long id)
     {
-        var user = await GetLoggedInUserAsync();
+        var user = await _utilityService.GetLoggedInUserAsync();
 
-        var todoEntity = await _repository.Todos
-            .Find(todo => todo.CreatorId.Equals(user.Id) && todo.Id.Equals(id), trackChanges: false)
-            .FirstOrDefaultAsync();
+        var todoEntity = await _repository.Todos.GetByIdAsync(user.Id, id);
 
         if (todoEntity is null)
             throw new Exception("Todo doesn't exists");
@@ -89,13 +86,11 @@ public class TodoService : ITodoService
         return PrepareTodoResponse(todoEntity);
     }
 
-    public async Task Delete(long id)
+    public async Task DeleteAsync(long id)
     {
-        var user = await GetLoggedInUserAsync();
+        var user = await _utilityService.GetLoggedInUserAsync();
 
-        var todoEntity = await _repository.Todos
-            .Find(todo => todo.CreatorId.Equals(user.Id) && todo.Id.Equals(id), trackChanges: false)
-            .FirstOrDefaultAsync();
+        var todoEntity = await _repository.Todos.GetByIdAsync(user.Id, id);
 
         if (todoEntity is null)
             throw new Exception("Todo doesn't exists");
@@ -104,9 +99,9 @@ public class TodoService : ITodoService
         await _repository.SaveChanges();
     }
 
-    public async Task<IEnumerable<TodoResponseDto>> Search(string? searchText)
+    public async Task<IEnumerable<TodoResponseDto>> SearchAsync(string? searchText)
     {
-        var user = await GetLoggedInUserAsync();
+        var user = await _utilityService.GetLoggedInUserAsync();
 
         var todoResponses = _repository.Todos;
 
@@ -127,17 +122,7 @@ public class TodoService : ITodoService
             .ToListAsync();
     }
 
-    /* Utility Functions */
-
-    private async Task<ApplicationUser> GetLoggedInUserAsync()
-    {
-        var loggedInUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-        if (loggedInUser is null)
-            throw new ApiException("User doesn't exists or not logged in", StatusCodes.Status400BadRequest);
-
-        return loggedInUser;
-    }
-
+    #region Utility Functions
     // todo: replace with automapper
     private static TodoResponseDto PrepareTodoResponse(Todo todo)
     {
@@ -151,15 +136,6 @@ public class TodoService : ITodoService
             Deadline = todo.Deadline?.ToShortDateString()
         };
     }
-
-    private static DateTime? ConvertToDateTime(long? deadline)
-    {
-        if (deadline is null)
-            return null;
-
-        var date = new DateTime(1970, 1, 1, 0, 0, 0, 0); // epoch start
-        date = date.AddMilliseconds((double)deadline);
-        return date;
-    }
+    #endregion
 
 }

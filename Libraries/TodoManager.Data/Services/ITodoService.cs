@@ -5,10 +5,10 @@ namespace TodoManager.Data.Services;
 
 public interface ITodoService
 {
-    Task<TodoResponseDto> CreateTodo(TodoCreateDto createDto);
+    Task<TodoResponseDto> CreateTodoAsync(TodoCreateDto createDto);
     Task<IEnumerable<TodoResponseDto>> GetAllAsync();
-    Task UpdateTodo(long id, TodoUpdateDto updateDto);
-    Task<TodoResponseDto> GetTodo(long id);
-    Task Delete(long id);
-    Task<IEnumerable<TodoResponseDto>> Search(string? searchText);
+    Task UpdateTodoAsync(long id, TodoUpdateDto updateDto);
+    Task<TodoResponseDto> GetByIdAsync(long id);
+    Task DeleteAsync(long id);
+    Task<IEnumerable<TodoResponseDto>> SearchAsync(string? searchText);
 }

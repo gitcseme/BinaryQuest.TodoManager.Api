@@ -1,5 +1,5 @@
 ﻿using TodoManager.Membership.AuthModels;
-using TodoManager.Membership.Entities;
+using TodoManager.Shared.Entities;
 
 namespace TodoManager.Membership.Services
 {

@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using TodoManager.Data;
 using TodoManager.Data.Services;
 using TodoManager.Membership;
-using TodoManager.Membership.Entities;
+using TodoManager.Shared.Entities;
 using TodoManager.Membership.Services;
 using TodoManager.NotificationChannel;
 using TodoManager.NotificationChannel.Services;
 using LogLevel = NLog.LogLevel;
+using TodoManager.Shared.Services;
 
 namespace TodoManager.Api.Extensions;
 
@@ -115,8 +116,7 @@ public static class ServiceExtensions
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ITodoService, TodoService>();
-        //services.AddScoped<TodosDbContext>();
-        //services.AddScoped<NotificationContext>();
+        services.AddScoped<IUtilityService, UtilityService>();
     }
 
     public static void RegisterRepositoryManagers(this IServiceCollection services)

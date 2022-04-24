@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace TodoManager.Membership.Entities;
+namespace TodoManager.Shared.Entities;
 
 public class ApplicationUser : IdentityUser<long>
 {

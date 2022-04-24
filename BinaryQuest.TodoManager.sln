@@ -21,6 +21,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.BackgroundWorke
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.NotificationChannel", "Libraries\TodoManager.NotificationChannel\TodoManager.NotificationChannel.csproj", "{6B4D5889-E5E0-44BC-9B46-D1FF5DCDF437}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{371581BC-3E98-436A-B971-68BDED4E80B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoManager.Api.Tests", "Tests\TodoManager.Api.Tests\TodoManager.Api.Tests.csproj", "{3A56DA21-BF40-4C49-BA28-9A8E62C98B39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,10 @@ Global
 		{6B4D5889-E5E0-44BC-9B46-D1FF5DCDF437}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B4D5889-E5E0-44BC-9B46-D1FF5DCDF437}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B4D5889-E5E0-44BC-9B46-D1FF5DCDF437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A56DA21-BF40-4C49-BA28-9A8E62C98B39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A56DA21-BF40-4C49-BA28-9A8E62C98B39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A56DA21-BF40-4C49-BA28-9A8E62C98B39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A56DA21-BF40-4C49-BA28-9A8E62C98B39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +79,7 @@ Global
 		{E35DD56E-9C71-4FE3-AF81-305F215AADC8} = {09BA0654-B4C2-4C12-9757-C6B5455B3D12}
 		{B6AFAF59-F074-480F-B07C-C5DE8F492D60} = {09BA0654-B4C2-4C12-9757-C6B5455B3D12}
 		{6B4D5889-E5E0-44BC-9B46-D1FF5DCDF437} = {09BA0654-B4C2-4C12-9757-C6B5455B3D12}
+		{3A56DA21-BF40-4C49-BA28-9A8E62C98B39} = {371581BC-3E98-436A-B971-68BDED4E80B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C8D8D1C-DE78-432D-BEFC-1D094FE36422}

@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System.Text;
 using TodoManager.Membership.AuthModels;
-using TodoManager.Membership.Entities;
+using TodoManager.Shared.Entities;
 using TodoManager.Shared.CustomExceptions;
 
 namespace TodoManager.Membership.Services;
